@@ -1,8 +1,19 @@
 import React, { Fragment, useEffect, useContext } from 'react';
-import Spinner from '../layout/Spinner';
 import { Link, useParams } from 'react-router-dom';
+import Spinner from '../layout/Spinner';
+import Repos from '../repos/Repos';
+import GithubContext from '../../context/github/githubContext';
 
-function User({ getUser, loading, user }) {
+const User = () => {
+  const githubContext = useContext(GithubContext);
+  const { getUser, loading, user, repos, getUserRepos } = githubContext;
+
+  useEffect(() => {
+    getUser(params.login);
+    getUserRepos(params.login);
+    // eslint-disable-next-line
+  }, []);
+
   const params = useParams();
   const {
     name,
@@ -19,9 +30,6 @@ function User({ getUser, loading, user }) {
     blog,
     company,
   } = user;
-  useEffect(() => {
-    getUser(params.login);
-  }, []);
 
   if (loading) return <Spinner />;
 
@@ -88,8 +96,9 @@ function User({ getUser, loading, user }) {
         <div className='badge badge-danger'>Public Repos: {public_repos}</div>
         <div className='badge badge-dark'>Public Gists: {public_gists}</div>
       </div>
+      <Repos repos={repos} />
     </Fragment>
   );
-}
+};
 
 export default User;
